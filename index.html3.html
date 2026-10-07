@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lily Fresh Supermart & Kirana - Premium Groceries & Daily Essentials</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lily: {
+              50: '#fff5f7',
+              100: '#ffe3eb',
+              200: '#fcc8d7',
+              300: '#f2a6b8',
+              400: '#e86e8a',
+              500: '#d93d62',
+              600: '#c2234a',
+              700: '#a3183b',
+            },
+            leaf: {
+              50: '#f2f9f5',
+              100: '#e1f2e7',
+              200: '#c2e5cf',
+              500: '#2d6a4f',
+              600: '#1b4332',
+              700: '#0f291e',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fff5f7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f2a6b8;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d93d62;
+    }
+
+    /* Animated Floating Petals Canvas */
+    #petal-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Swipe Carousel Support */
+    .product-carousel {
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .product-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    .carousel-item {
+      scroll-snap-align: start;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(252, 200, 215, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-lily-200 selection:text-lily-700">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-leaf-600 via-lily-600 to-leaf-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-inner flex items-center justify-center gap-2">
+    <span>🌸 Special Offer: Use Code <strong class="bg-white/20 px-2 py-0.5 rounded border border-white/30 tracking-wider">LILY10</strong> for 10% OFF or <strong class="bg-white/20 px-2 py-0.5 rounded border border-white/30 tracking-wider">WELCOME50</strong> for ₹50 OFF!</span>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-lily-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-lily-100 border border-lily-200 flex items-center justify-center text-lily-600 text-2xl group-hover:scale-105 transition-transform duration-300 shadow-sm">
+          🪷
+        </div>
+        <div>
+          <span class="font-serif font-extrabold text-xl sm:text-2xl text-leaf-600 block leading-none">Lily Fresh</span>
+          <span class="text-[11px] text-lily-600 font-bold uppercase tracking-wider block mt-1">Supermart & Kirana</span>
+        </div>
+      </a>
+
+      <!-- Desktop Search Bar -->
+      <div class="hidden md:flex items-center flex-1 max-w-lg mx-6 relative">
+        <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Search Atta, Rice, Ghee, Spices, Dal or Oil..." class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-sm text-slate-800 pl-10 pr-10 py-2.5 rounded-2xl border border-slate-200 focus:border-lily-400 focus:ring-2 focus:ring-lily-100 outline-none transition-all">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm"></i>
+        <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute right-3 text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        <!-- Delivery Hotline -->
+        <a href="tel:1800123999" class="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-leaf-600 px-3 py-2 rounded-xl hover:bg-leaf-50 transition-colors">
+          <i class="fa-solid fa-phone-volume text-leaf-500 text-base"></i>
+          <div>
+            <span class="text-[10px] text-slate-400 block leading-none">Express Orders</span>
+            <span class="font-bold">1800-123-999</span>
+          </div>
+        </a>
+
+        <!-- Cart Trigger Button -->
+        <button onclick="toggleCartModal(true)" class="relative bg-gradient-to-r from-lily-500 to-lily-600 hover:from-lily-600 hover:to-lily-700 text-white px-4 sm:px-5 py-2.5 rounded-2xl font-bold shadow-md shadow-lily-500/20 hover:shadow-lg transition-all flex items-center gap-2.5 active:scale-95">
+          <i class="fa-solid fa-basket-shopping text-base"></i>
+          <span class="hidden sm:inline text-sm">Cart</span>
+          <span id="cart-badge-count" class="bg-white text-lily-700 font-extrabold text-xs px-2 py-0.5 rounded-full min-w-[22px] text-center shadow-inner">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Search Bar -->
+    <div class="md:hidden px-4 pb-3">
+      <div class="relative">
+        <input type="text" id="mobile-search-input" onkeyup="filterProductsMobile()" placeholder="Search daily groceries..." class="w-full bg-slate-100 text-sm text-slate-800 pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:border-lily-400 focus:ring-2 focus:ring-lily-100 outline-none">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-sm"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Hero Banner -->
+    <section class="relative bg-gradient-to-br from-lily-50 via-white to-leaf-50 overflow-hidden border-b border-lily-100 py-12 lg:py-16">
+      <canvas id="petal-canvas"></canvas>
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Hero Text Content -->
+          <div class="lg:col-span-7 text-center lg:text-left">
+            <span class="inline-flex items-center gap-2 bg-white/90 border border-lily-200 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold text-lily-700 shadow-sm mb-4">
+              <span class="text-base">🌸</span> Farm Fresh Daily Staples & Pure Quality
+            </span>
+            <h1 class="font-serif font-bold text-3xl sm:text-5xl lg:text-6xl text-slate-900 leading-tight mb-4">
+              Your Friendly Neighborhood <span class="text-transparent bg-clip-text bg-gradient-to-r from-lily-600 via-lily-500 to-leaf-600">Kirana Store</span>
+            </h1>
+            <p class="text-slate-600 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto lg:mx-0 mb-6 leading-relaxed">
+              Order fresh whole wheat atta, aged basmati rice, pure cow ghee, aromatic spices, cold-pressed oils, and household essentials. Express 2-hour delivery to your doorstep!
+            </p>
+
+            <!-- Highlights -->
+            <div class="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 text-xs sm:text-sm font-semibold text-slate-700">
+              <div class="flex items-center gap-2 bg-white/80 px-3.5 py-2 rounded-2xl border border-lily-100 shadow-sm">
+                <i class="fa-solid fa-truck-fast text-leaf-600 text-base"></i>
+                <span>Free Express Delivery</span>
+              </div>
+              <div class="flex items-center gap-2 bg-white/80 px-3.5 py-2 rounded-2xl border border-lily-100 shadow-sm">
+                <i class="fa-solid fa-indian-rupee-sign text-lily-600 text-base"></i>
+                <span>Direct Kirana Prices</span>
+              </div>
+              <div class="flex items-center gap-2 bg-white/80 px-3.5 py-2 rounded-2xl border border-lily-100 shadow-sm">
+                <i class="fa-solid fa-rotate-left text-blue-600 text-base"></i>
+                <span>Hassle-Free Returns</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Illustration Card -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-md">
+              <div class="absolute -inset-1.5 bg-gradient-to-r from-lily-400 to-leaf-400 rounded-3xl blur-lg opacity-30 animate-pulse"></div>
+              <div class="relative glass-card rounded-3xl p-6 shadow-2xl text-center border border-white">
+                <div class="w-full h-60 rounded-2xl overflow-hidden mb-4 relative shadow-inner">
+                  <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80" alt="Fresh Indian Groceries" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent flex items-end p-4">
+                    <div class="text-left">
+                      <span class="text-lily-300 text-xs font-bold uppercase tracking-wider block">100% Guaranteed</span>
+                      <span class="text-white font-serif text-lg font-bold">Purity & Freshness In Every Grain</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center text-xs font-bold text-slate-700 bg-lily-50/80 p-3 rounded-2xl border border-lily-100">
+                  <span class="text-leaf-700 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Quality Tested</span>
+                  <span class="text-lily-700">Special Festive Offers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Section Header & Filter Tabs -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-lily-600">Daily Pantry Essentials</span>
+          <h2 class="font-serif font-bold text-2xl sm:text-3xl text-slate-900 mt-1">Featured Grocery Products</h2>
+        </div>
+
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0" id="category-filter-container">
+          <button onclick="filterCategory('all')" class="cat-btn active bg-lily-600 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all shadow-sm">All Essentials</button>
+          <button onclick="filterCategory('grains')" class="cat-btn bg-white hover:bg-lily-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all">Atta & Rice</button>
+          <button onclick="filterCategory('oils')" class="cat-btn bg-white hover:bg-lily-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all">Oils & Ghee</button>
+          <button onclick="filterCategory('spices')" class="cat-btn bg-white hover:bg-lily-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all">Spices & Tea</button>
+          <button onclick="filterCategory('pulses')" class="cat-btn bg-white hover:bg-lily-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all">Pulses & Dals</button>
+          <button onclick="filterCategory('household')" class="cat-btn bg-white hover:bg-lily-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all">Household</button>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Return & Refund Policy Section -->
+    <section class="bg-gradient-to-b from-white via-lily-50/40 to-slate-50 py-12 border-y border-lily-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="bg-leaf-50 text-leaf-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-leaf-200">Customer Assurance</span>
+          <h2 class="font-serif font-bold text-2xl sm:text-3xl text-slate-900 mt-2">100% Quality & Hassle-Free Returns</h2>
+          <p class="text-slate-600 text-sm mt-2">We stand by the quality of our kirana products. Simple returns with instant UPI or bank refunds.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-3xl border border-lily-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-lily-100 text-lily-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-base mb-2">24h / 7-Day Return Guarantee</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">24-hour return window for fresh dairy and produce, and 7 days for packaged staples like Atta, Rice, and Oils.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl border border-lily-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-leaf-100 text-leaf-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+              <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-base mb-2">Instant UPI / Wallet Refund</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">Once picked up by our delivery executive, your refund is instantly processed directly to your UPI ID or source card.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl border border-lily-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+              <i class="fa-solid fa-truck-ramp-box"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-base mb-2">Free Doorstep Pickup</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">No need to visit a shop. Our executive will pick up returned items directly from your delivery address.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Review Submission Form -->
+        <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <h2 class="font-serif font-bold text-2xl text-slate-900 mb-2">Customer Feedback</h2>
+          <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+            <div class="text-4xl font-extrabold text-slate-900">4.9</div>
+            <div>
+              <div class="flex text-amber-400 text-sm mb-1">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+              </div>
+              <span class="text-xs text-slate-500 font-medium">Based on 1,480+ local Kirana deliveries</span>
+            </div>
+          </div>
+
+          <form id="review-form" onsubmit="submitReview(event)" class="space-y-4">
+            <h3 class="font-bold text-slate-800 text-sm">Write Your Experience</h3>
+            <div>
+              <input type="text" id="rev-name" required placeholder="Your Name *" class="w-full bg-slate-50 text-sm border border-slate-200 rounded-2xl p-3 focus:bg-white focus:border-lily-500 outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <select id="rev-rating" class="w-full bg-slate-50 text-sm border border-slate-200 rounded-2xl p-3 focus:bg-white focus:border-lily-500 outline-none">
+                  <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                  <option value="4">⭐⭐⭐⭐☆ (4/5)</option>
+                  <option value="3">⭐⭐⭐☆☆ (3/5)</option>
+                </select>
+              </div>
+              <div>
+                <input type="text" id="rev-location" required placeholder="City / Area *" class="w-full bg-slate-50 text-sm border border-slate-200 rounded-2xl p-3 focus:bg-white focus:border-lily-500 outline-none">
+              </div>
+            </div>
+            <div>
+              <textarea id="rev-comment" required rows="3" placeholder="Write about item freshness, delivery speed or packaging..." class="w-full bg-slate-50 text-sm border border-slate-200 rounded-2xl p-3 focus:bg-white focus:border-lily-500 outline-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm py-3 rounded-2xl transition-all shadow">Post Review</button>
+          </form>
+        </div>
+
+        <!-- Customer Reviews List -->
+        <div class="lg:col-span-7 space-y-4" id="reviews-container">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-sm border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div class="space-y-4">
+          <div class="flex items-center gap-2 text-white font-serif font-bold text-xl">
+            <span>🌸</span> Lily Fresh Supermart
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Delivering authentic daily groceries, pure ghee, whole grains, and spices directly from farm to kitchen across Indian homes.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-semibold mb-3 text-sm">Popular Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Chakki Fresh Atta & Maida</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Aged Basmati Rice & Poha</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Pure Desi Cow Ghee</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Toor Dal & Chana Dal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-semibold mb-3 text-sm">Customer Care</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Track Order Status</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">24h Return Policy</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Store Locators</a></li>
+            <li><a href="#" class="hover:text-lily-400 transition-colors">Kirana Wholesale Enquiries</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-semibold mb-3 text-sm">Indian Payment Options</h4>
+          <div class="flex flex-wrap gap-2 text-[11px] text-slate-300">
+            <span class="bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">GPay / PhonePe UPI</span>
+            <span class="bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">RuPay Card</span>
+            <span class="bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">Visa / Mastercard</span>
+            <span class="bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">Net Banking</span>
+            <span class="bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">Cash on Delivery</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        <p>© 2026 Lily Fresh Supermart & Kirana India. All rights reserved.</p>
+        <p class="flex items-center gap-1">Crafted with <i class="fa-solid fa-heart text-lily-500"></i> for Indian households.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Sliding Drawer Modal -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="cart-panel" class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out">
+      
+      <!-- Cart Drawer Header -->
+      <div class="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-lily-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-lily-100 text-lily-600 flex items-center justify-center text-lg">
+            🛒
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-lg">Your Kirana Basket</h3>
+            <span id="cart-item-count-subtitle" class="text-xs text-slate-500">0 items added</span>
+          </div>
+        </div>
+        <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cart Items List Container -->
+      <div id="cart-items-container" class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-4">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Cart Summary & Coupon Section -->
+      <div class="p-4 sm:p-6 border-t border-slate-100 bg-slate-50/80 space-y-4">
+        <!-- Coupon Input Box -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5">Apply Discount Coupon</label>
+          <div class="flex gap-2">
+            <input type="text" id="coupon-code-input" placeholder="Use LILY10 or WELCOME50" class="flex-grow uppercase bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:border-lily-500 outline-none">
+            <button onclick="applyCoupon()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-4 rounded-xl transition-all">Apply</button>
+          </div>
+          <p id="coupon-status-msg" class="text-xs font-medium mt-1.5 hidden"></p>
+        </div>
+
+        <!-- Bill Calculation -->
+        <div class="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-200">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span class="font-semibold text-slate-800">₹<span id="cart-subtotal">0.00</span></span>
+          </div>
+          <div class="flex justify-between text-leaf-700 font-medium">
+            <span>Coupon Savings</span>
+            <span>- ₹<span id="cart-discount">0.00</span></span>
+          </div>
+          <div class="flex justify-between">
+            <span>Delivery Fee</span>
+            <span class="text-leaf-600 font-semibold">FREE</span>
+          </div>
+          <div class="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
+            <span>Total Payable Amount</span>
+            <span class="text-lily-700 text-base">₹<span id="cart-final-total">0.00</span></span>
+          </div>
+        </div>
+
+        <!-- Checkout Button -->
+        <button onclick="openCheckoutModal()" class="w-full bg-gradient-to-r from-lily-600 to-leaf-600 hover:from-lily-700 hover:to-leaf-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-lily-500/20 transition-all flex items-center justify-center gap-2 active:scale-98">
+          <span>Proceed to Indian Checkout</span>
+          <i class="fa-solid fa-arrow-right text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout & Indian Payment Options Modal -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-leaf-600 to-leaf-700 text-white p-5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-lock text-xl text-lily-200"></i>
+          <div>
+            <h3 class="font-bold text-base">Secure Indian Checkout</h3>
+            <p class="text-xs text-leaf-100">UPI, Cards & Cash on Delivery Options</p>
+          </div>
+        </div>
+        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Checkout Form Body -->
+      <div class="p-6 overflow-y-auto space-y-6">
+        <!-- 1. Delivery Details -->
+        <div>
+          <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-leaf-100 text-leaf-700 flex items-center justify-center text-[10px]">1</span> Delivery Address
+          </h4>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <input type="text" id="cust-name" placeholder="Full Name *" required class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-leaf-500">
+            <input type="tel" id="cust-phone" placeholder="10-Digit Mobile Number *" required class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-leaf-500">
+            <input type="text" id="cust-address" placeholder="Flat / House / Landmark Address *" required class="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-leaf-500">
+            <input type="text" id="cust-pincode" placeholder="Pincode (e.g. 361001) *" required class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-leaf-500">
+            <input type="text" id="cust-city" placeholder="City / Town *" required class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-leaf-500">
+          </div>
+        </div>
+
+        <!-- 2. Payment Method -->
+        <div>
+          <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-leaf-100 text-leaf-700 flex items-center justify-center text-[10px]">2</span> Payment Options
+          </h4>
+          
+          <div class="space-y-2.5">
+            <!-- UPI Option -->
+            <label class="flex flex-col p-3.5 border rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors border-leaf-400 bg-leaf-50/20">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="payment_method" value="upi" checked onclick="togglePaymentFields('upi')" class="text-leaf-600 focus:ring-leaf-500">
+                  <div>
+                    <span class="font-bold text-slate-900 text-xs sm:text-sm block">UPI (Instant 0% Fee)</span>
+                    <span class="text-[11px] text-slate-500">Google Pay, PhonePe, Paytm, BHIM</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-leaf-700 bg-leaf-100 px-2 py-0.5 rounded-full">Recommended</span>
+              </div>
+              
+              <!-- UPI Extra Fields -->
+              <div id="upi-extra-field" class="mt-3 pt-2 border-t border-slate-200">
+                <input type="text" id="upi-id-input" placeholder="Enter UPI ID (e.g. mobile@upi, name@okicici)" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs outline-none focus:border-leaf-500">
+              </div>
+            </label>
+
+            <!-- Card Option -->
+            <label class="flex flex-col p-3.5 border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="payment_method" value="card" onclick="togglePaymentFields('card')" class="text-leaf-600 focus:ring-leaf-500">
+                  <div>
+                    <span class="font-bold text-slate-900 text-xs sm:text-sm block">Debit / Credit Card / RuPay</span>
+                    <span class="text-[11px] text-slate-500">All major Indian Bank Cards</span>
+                  </div>
+                </div>
+                <i class="fa-solid fa-credit-card text-slate-400"></i>
+              </div>
+
+              <!-- Card Extra Fields -->
+              <div id="card-extra-field" class="hidden mt-3 pt-2 border-t border-slate-200 space-y-2">
+                <input type="text" placeholder="16-Digit Card Number" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs outline-none">
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" placeholder="MM/YY" class="bg-white border border-slate-200 rounded-xl p-2 text-xs outline-none">
+                  <input type="password" placeholder="CVV" maxlength="3" class="bg-white border border-slate-200 rounded-xl p-2 text-xs outline-none">
+                </div>
+              </div>
+            </label>
+
+            <!-- Net Banking -->
+            <label class="flex items-center justify-between p-3.5 border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="payment_method" value="netbanking" onclick="togglePaymentFields('netbanking')" class="text-leaf-600 focus:ring-leaf-500">
+                <div>
+                  <span class="font-bold text-slate-900 text-xs sm:text-sm block">Net Banking</span>
+                  <span class="text-[11px] text-slate-500">SBI, HDFC, ICICI, Axis & 50+ Banks</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-building-columns text-slate-400"></i>
+            </label>
+
+            <!-- COD -->
+            <label class="flex items-center justify-between p-3.5 border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="payment_method" value="cod" onclick="togglePaymentFields('cod')" class="text-leaf-600 focus:ring-leaf-500">
+                <div>
+                  <span class="font-bold text-slate-900 text-xs sm:text-sm block">Cash on Delivery (COD)</span>
+                  <span class="text-[11px] text-slate-500">Pay cash or scan QR upon delivery</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-hand-holding-dollar text-slate-400"></i>
+            </label>
+          </div>
+        </div>
+
+        <!-- Total Payable Pill -->
+        <div class="bg-slate-100 p-4 rounded-2xl flex justify-between items-center text-sm">
+          <span class="font-medium text-slate-700">Total Amount:</span>
+          <span class="font-extrabold text-lily-700 text-lg">₹<span id="checkout-payable-total">0.00</span></span>
+        </div>
+      </div>
+
+      <!-- Submit Payment Button -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50">
+        <button onclick="processOrder()" class="w-full bg-leaf-600 hover:bg-leaf-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Confirm & Complete Order</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Success Modal -->
+  <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 text-center space-y-4">
+      <div class="w-20 h-20 bg-leaf-100 text-leaf-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+        🌸
+      </div>
+      <h3 class="font-serif font-bold text-2xl text-slate-900">Order Placed Successfully!</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Thank you for ordering with Lily Fresh Supermart. Your Kirana Order ID is <strong id="order-id-display" class="text-slate-900">#LILY-88231</strong>.
+      </p>
+      <div class="bg-slate-50 p-3.5 rounded-2xl text-left text-xs space-y-1.5 border border-slate-200">
+        <div class="flex justify-between"><span class="text-slate-500">Status:</span><span class="text-leaf-600 font-bold">Confirmed</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Estimated Delivery:</span><span class="font-bold text-slate-800">Today within 2 Hours</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Payment:</span><span id="success-payment-type" class="font-bold text-slate-800">UPI</span></div>
+      </div>
+      <button onclick="closeSuccessModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition-all text-xs">Back to Supermart</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    /* ===================================================
+       1. PETALS ANIMATION CANVAS (FLORAL LILY THEME)
+       =================================================== */
+    const canvas = document.getElementById('petal-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const petals = [];
+    const petalCount = 22;
+
+    class Petal {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.size = Math.random() * 8 + 6;
+        this.speedY = Math.random() * 1.2 + 0.6;
+        this.speedX = Math.random() * 0.8 - 0.4;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = Math.random() * 2 - 1;
+        this.opacity = Math.random() * 0.5 + 0.35;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += Math.sin(this.y * 0.02) + this.speedX;
+        this.rotation += this.rotationSpeed;
+        if (this.y > canvas.height + 20) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.fillStyle = `rgba(242, 166, 184, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(this.size, -this.size, this.size * 2, 0);
+        ctx.quadraticCurveTo(this.size, this.size, 0, 0);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < petalCount; i++) {
+      petals.push(new Petal());
+    }
+
+    function animatePetals() {
+      if (!canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      petals.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animatePetals);
+    }
+    animatePetals();
+
+
+    /* ===================================================
+       2. PRODUCTS DATA (INDIAN ESSENTIALS IN ₹ WITH MULTI-IMAGES)
+       =================================================== */
+    const products = [
+      {
+        id: 1,
+        title: "Fortune Chakki Fresh Atta (5kg)",
+        category: "grains",
+        price: 245,
+        mrp: 290,
+        discount: 15,
+        rating: 4.8,
+        reviewsCount: 420,
+        unit: "5 kg Pack",
+        description: "100% stone-ground whole wheat grain flour for extra soft and fluffy rotis.",
+        images: [
+          "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 2,
+        title: "Royal Aged Basmati Rice (5kg)",
+        category: "grains",
+        price: 580,
+        mrp: 720,
+        discount: 19,
+        rating: 4.9,
+        reviewsCount: 512,
+        unit: "5 kg Bag",
+        description: "Extra long grain aged aromatic Basmati rice ideal for biryanis and pulao.",
+        images: [
+          "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 3,
+        title: "Amul Pure Cow Ghee (1L Jar)",
+        category: "oils",
+        price: 665,
+        mrp: 720,
+        discount: 8,
+        rating: 4.9,
+        reviewsCount: 680,
+        unit: "1 Litre",
+        description: "Pure rich granular cow ghee made from fresh milk fat with rich traditional aroma.",
+        images: [
+          "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 4,
+        title: "Refined Sunflower Oil (2L)",
+        category: "oils",
+        price: 260,
+        mrp: 310,
+        discount: 16,
+        rating: 4.7,
+        reviewsCount: 310,
+        unit: "2 Litre Can",
+        description: "Light and easy-to-digest healthy cooking oil rich in Vitamin A, D & E.",
+        images: [
+          "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 5,
+        title: "Organic Turmeric & Chilli Spices (500g)",
+        category: "spices",
+        price: 185,
+        mrp: 240,
+        discount: 22,
+        rating: 4.8,
+        reviewsCount: 230,
+        unit: "Combo Pack",
+        description: "High curcumin organic turmeric powder & fiery red chilli powder pair.",
+        images: [
+          "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 6,
+        title: "Unpolished Toor Dal (1kg)",
+        category: "pulses",
+        price: 160,
+        mrp: 190,
+        discount: 15,
+        rating: 4.7,
+        reviewsCount: 195,
+        unit: "1 kg Pack",
+        description: "High protein unpolished yellow arhar dal processed naturally without chemicals.",
+        images: [
+          "https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 7,
+        title: "Assam Special Elaichi Tea (500g)",
+        category: "spices",
+        price: 230,
+        mrp: 280,
+        discount: 17,
+        rating: 4.8,
+        reviewsCount: 340,
+        unit: "500g Box",
+        description: "Aromatic CTC strong Assam tea blended with crushed natural green cardamom.",
+        images: [
+          "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80"
+        ]
+      },
+      {
+        id: 8,
+        title: "Lily Antibacterial Cleaner Combo",
+        category: "household",
+        price: 299,
+        mrp: 380,
+        discount: 21,
+        rating: 4.6,
+        reviewsCount: 150,
+        unit: "2 x 1L Bottles",
+        description: "Floral lily scented disinfectant surface cleaner & liquid handwash pair.",
+        images: [
+          "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
+          "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=600&q=80"
+        ]
+      }
+    ];
+
+    let activeCategory = 'all';
+
+
+    /* ===================================================
+       3. RENDER PRODUCT CARDS & SWIPEABLE CAROUSEL
+       =================================================== */
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const searchVal = (
+        document.getElementById('search-input')?.value || 
+        document.getElementById('mobile-search-input')?.value || ''
+      ).toLowerCase().trim();
+
+      // Show/Hide Clear Search Icon
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        if (searchVal.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      const filtered = products.filter(p => {
+        const matchesCat = (activeCategory === 'all' || p.category === activeCategory);
+        const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.description.toLowerCase().includes(searchVal);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200">
+            <span class="text-4xl">🔍</span>
+            <p class="font-bold text-slate-800 text-base mt-2">No matching grocery items found</p>
+            <p class="text-xs text-slate-500">Try searching for Atta, Rice, Ghee, Spices or Oil...</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group";
+        
+        card.innerHTML = `
+          <!-- Swipeable Image Carousel Header -->
+          <div class="relative bg-slate-100 h-52 overflow-hidden select-none">
+            
+            <!-- Badges -->
+            <div class="absolute top-3 left-3 z-20 flex flex-col gap-1">
+              <span class="bg-lily-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm">
+                ${p.discount}% OFF
+              </span>
+            </div>
+
+            <div class="absolute top-3 right-3 z-20">
+              <span class="bg-white/90 text-slate-700 text-[10px] font-bold px-2 py-1 rounded-full border border-slate-200">
+                ${p.unit}
+              </span>
+            </div>
+
+            <!-- Scroll Snap Container for Touch Swipe -->
+            <div id="carousel-${p.id}" class="product-carousel flex w-full h-full overflow-x-auto">
+              ${p.images.map((img, idx) => `
+                <div class="carousel-item w-full h-full flex-shrink-0 relative">
+                  <img src="${img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Swipe Nav Buttons -->
+            ${p.images.length > 1 ? `
+              <button onclick="scrollCarousel(${p.id}, -1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center text-xs shadow-md transition-all z-20">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button onclick="scrollCarousel(${p.id}, 1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center text-xs shadow-md transition-all z-20">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            ` : ''}
+
+            <div class="absolute bottom-2 left-0 right-0 z-20 flex justify-center gap-1.5 pointer-events-none">
+              ${p.images.map((_, idx) => `
+                <span id="dot-${p.id}-${idx}" class="w-2 h-2 rounded-full transition-all ${idx === 0 ? 'bg-lily-600 w-4' : 'bg-white/70'}"></span>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Product Body -->
+          <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="text-leaf-700 font-bold uppercase tracking-wider text-[10px]"><i class="fa-solid fa-circle text-[8px] text-leaf-500 mr-1"></i>In Stock</span>
+                <span class="text-amber-500 font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-star text-[10px]"></i> ${p.rating} (${p.reviewsCount})
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-900 text-base leading-snug group-hover:text-lily-700 transition-colors">${p.title}</h3>
+              <p class="text-slate-500 text-xs mt-1 line-clamp-2">${p.description}</p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-slate-400 line-through">₹${p.mrp}</span>
+                <div class="text-xl font-extrabold text-slate-900">₹${p.price}</div>
+              </div>
+
+              <button onclick="addToCart(${p.id})" class="bg-lily-50 hover:bg-lily-600 text-lily-700 hover:text-white border border-lily-200 hover:border-lily-600 font-bold px-4 py-2.5 rounded-2xl text-xs transition-all flex items-center gap-1.5 active:scale-95 shadow-sm">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add To Cart</span>
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function scrollCarousel(productId, direction) {
+      const elem = document.getElementById(`carousel-${productId}`);
+      if (!elem) return;
+      const scrollAmount = elem.clientWidth;
+      elem.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-lily-600', 'text-white', 'active');
+        btn.classList.add('bg-white', 'text-slate-700');
+      });
+      event.currentTarget.classList.add('bg-lily-600', 'text-white', 'active');
+      event.currentTarget.classList.remove('bg-white', 'text-slate-700');
+      renderProducts();
+    }
+
+    function filterProducts() {
+      renderProducts();
+    }
+    function filterProductsMobile() {
+      renderProducts();
+    }
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('mobile-search-input').value = '';
+      renderProducts();
+    }
+
+
+    /* ===================================================
+       4. SHOPPING CART & COUPON ENGINE
+       =================================================== */
+    let cart = [];
+    let appliedCoupon = null;
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const existing = cart.find(item => item.id === productId);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+
+      updateCartBadge();
+      showToast(`Added "${product.title}" to cart! 🌸`);
+    }
+
+    function updateCartBadge() {
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-badge-count').innerText = totalQty;
+      document.getElementById('cart-item-count-subtitle').innerText = `${totalQty} items in basket`;
+    }
+
+    function toggleCartModal(show) {
+      const modal = document.getElementById('cart-modal');
+      const panel = document.getElementById('cart-panel');
+      
+      if (show) {
+        renderCartItems();
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        panel.classList.remove('translate-x-full');
+      } else {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        panel.classList.add('translate-x-full');
+      }
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById('cart-items-container');
+      container.innerHTML = '';
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 space-y-3">
+            <span class="text-5xl">🌸</span>
+            <p class="font-bold text-slate-800 text-base">Your Kirana basket is empty</p>
+            <p class="text-xs text-slate-500 max-w-xs mx-auto">Explore daily essentials and add items to your cart!</p>
+          </div>
+        `;
+        calculateCartTotals();
+        return;
+      }
+
+      cart.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl border border-slate-200 gap-3";
+        div.innerHTML = `
+          <img src="${item.images[0]}" alt="${item.title}" class="w-14 h-14 object-cover rounded-xl border border-slate-200 flex-shrink-0">
+          <div class="flex-grow min-w-0">
+            <h4 class="font-bold text-slate-900 text-xs truncate">${item.title}</h4>
+            <div class="text-xs text-lily-700 font-extrabold mt-0.5">₹${item.price}</div>
+          </div>
+          <div class="flex items-center gap-2 bg-white px-2.5 py-1 rounded-xl border border-slate-200">
+            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-lily-600 font-bold text-xs">-</button>
+            <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-lily-600 font-bold text-xs">+</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      calculateCartTotals();
+    }
+
+    function changeQty(productId, delta) {
+      const item = cart.find(i => i.id === productId);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== productId);
+      }
+      updateCartBadge();
+      renderCartItems();
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+      const msg = document.getElementById('coupon-status-msg');
+
+      if (code === 'LILY10') {
+        appliedCoupon = { type: 'percent', value: 10, code: 'LILY10' };
+        msg.className = "text-xs font-bold text-leaf-700 mt-1.5 block";
+        msg.innerText = "✓ 10% Off Coupon Applied Successfully!";
+      } else if (code === 'WELCOME50') {
+        appliedCoupon = { type: 'flat', value: 50, code: 'WELCOME50' };
+        msg.className = "text-xs font-bold text-leaf-700 mt-1.5 block";
+        msg.innerText = "✓ ₹50 Flat Off Coupon Applied!";
+      } else {
+        appliedCoupon = null;
+        msg.className = "text-xs font-bold text-rose-600 mt-1.5 block";
+        msg.innerText = "✕ Invalid Coupon Code";
+      }
+
+      calculateCartTotals();
+    }
+
+    function calculateCartTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      let discount = 0;
+
+      if (appliedCoupon && subtotal > 0) {
+        if (appliedCoupon.type === 'percent') {
+          discount = (subtotal * appliedCoupon.value) / 100;
+        } else if (appliedCoupon.type === 'flat') {
+          discount = Math.min(subtotal, appliedCoupon.value);
+        }
+      }
+
+      const finalTotal = Math.max(0, subtotal - discount);
+
+      document.getElementById('cart-subtotal').innerText = subtotal.toFixed(2);
+      document.getElementById('cart-discount').innerText = discount.toFixed(2);
+      document.getElementById('cart-final-total').innerText = finalTotal.toFixed(2);
+      document.getElementById('checkout-payable-total').innerText = finalTotal.toFixed(2);
+    }
+
+
+    /* ===================================================
+       5. CHECKOUT & PAYMENT MODAL LOGIC
+       =================================================== */
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        showToast("Please add items to your basket before checkout!");
+        return;
+      }
+      toggleCartModal(false);
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function togglePaymentFields(method) {
+      const upiField = document.getElementById('upi-extra-field');
+      const cardField = document.getElementById('card-extra-field');
+
+      if (upiField) upiField.classList.toggle('hidden', method !== 'upi');
+      if (cardField) cardField.classList.toggle('hidden', method !== 'card');
+    }
+
+    function processOrder() {
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+      const pincode = document.getElementById('cust-pincode').value.trim();
+
+      if (!name || !phone || !address || !pincode) {
+        showToast("Please complete your delivery address details!");
+        return;
+      }
+
+      const selectedPayment = document.querySelector('input[name="payment_method"]:checked')?.value || 'upi';
+
+      closeCheckoutModal();
+      
+      // Clear Cart
+      cart = [];
+      appliedCoupon = null;
+      updateCartBadge();
+
+      // Show Success Modal
+      document.getElementById('order-id-display').innerText = `#LILY-${Math.floor(100000 + Math.random() * 900000)}`;
+      document.getElementById('success-payment-type').innerText = selectedPayment.toUpperCase();
+      
+      const successModal = document.getElementById('success-modal');
+      successModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeSuccessModal() {
+      const successModal = document.getElementById('success-modal');
+      successModal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+
+    /* ===================================================
+       6. CUSTOMER REVIEWS & TOAST NOTIFICATIONS
+       =================================================== */
+    const defaultReviews = [
+      {
+        name: "Sunita Patel",
+        rating: 5,
+        location: "Mumbai",
+        date: "Today",
+        comment: "Very fresh Atta and Basmati rice! Delivery was made in under 1.5 hours. Excellent experience!"
+      },
+      {
+        name: "Ramesh Sharma",
+        rating: 5,
+        location: "Delhi NCR",
+        date: "Yesterday",
+        comment: "Amul Cow Ghee and Turmeric powder are 100% original. Love the floral website theme."
+      },
+      {
+        name: "Kavita Rao",
+        rating: 4,
+        location: "Bengaluru",
+        date: "2 days ago",
+        comment: "Seamless UPI payment and instant coupon discount applied using LILY10."
+      }
+    ];
+
+    function renderReviews() {
+      const container = document.getElementById('reviews-container');
+      if (!container) return;
+
+      container.innerHTML = defaultReviews.map(r => `
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-lily-200 transition-colors">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">${r.name}</h4>
+              <span class="text-[11px] text-slate-400">${r.location} • ${r.date}</span>
+            </div>
+            <div class="text-amber-400 text-xs">
+              ${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}
+            </div>
+          </div>
+          <p class="text-slate-600 text-xs leading-relaxed">${r.comment}</p>
+        </div>
+      `).join('');
+    }
+
+    function submitReview(e) {
+      e.preventDefault();
+      const name = document.getElementById('rev-name').value;
+      const rating = parseInt(document.getElementById('rev-rating').value);
+      const location = document.getElementById('rev-location').value;
+      const comment = document.getElementById('rev-comment').value;
+
+      defaultReviews.unshift({
+        name,
+        rating,
+        location,
+        date: "Just now",
+        comment
+      });
+
+      renderReviews();
+      document.getElementById('review-form').reset();
+      showToast("Thank you for submitting your review! 🌸");
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = "bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-xl border border-slate-800 flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-0";
+      toast.innerHTML = `<span>🌸</span> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Initialize App
+    window.onload = function() {
+      renderProducts();
+      renderReviews();
+    };
+  </script>
+</body>
+</html>
